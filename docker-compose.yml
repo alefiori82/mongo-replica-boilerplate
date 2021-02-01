@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+    mongodb1:
+        image: mongo:4
+        restart: always
+        container_name: mongodb1
+        volumes:
+        - mongodata1:/data/db
+        expose:
+        - "27017"
+        entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1"]
+
+    mongodb2:
+        image: mongo:4
+        restart: always
+        container_name: mongodb2
+        volumes:
+        - mongodata2:/data/db
+        expose:
+        - "27017"
+        entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1"]
+      
+    mongodb3:
+        image: mongo:4
+        restart: always
+        container_name: mongodb3
+        volumes:
+        - mongodata3:/data/db
+        expose:
+        - "27017"
+        entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1" ]
+    
+    mongosetup:
+        image: "mongo-setup"
+        build: "./mongo-setup"
+        container_name: "mongosetup"
+        depends_on:
+            - mongodb1
+        volumes:
+            - mongostatus:/data/
+    
+
+volumes:
+    mongodata1:
+    mongodata2:
+    mongodata3:
+    mongostatus:
